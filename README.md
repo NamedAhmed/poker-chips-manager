@@ -6,10 +6,12 @@ Play poker with nothing but a deck of cards. This free, no-sign-up web app track
 
 - Set up 2–10 players with names, starting chips and a bet unit.
 - Optional blinds (small and big), with an optional automatic raise every N hands.
-- Per-player bet, win and manual stack adjustments.
-- Pot tracking, with the pot awarded to one or more winners (odd chips go to the first winner).
-- Dealer rotation and blind posting on each new hand.
-- The game is saved in your browser, so a reload keeps your place.
+- Real betting streets: pre-flop → flop → turn → river, with community cards dealt at each street.
+- Enforced turn order and legal actions per seat: Fold, Check, Call, Raise (with a minimum), All-in.
+- Showdown: pick one or more winners and the pot is paid out (odd chips go to the first winner).
+- A bet no one called comes back to the raiser when the hand ends early.
+- Dealer rotation (skip only eliminated players) and blind posting each new hand.
+- The game is saved in your browser, so a reload keeps your place — even mid-hand.
 
 ## Run locally
 
