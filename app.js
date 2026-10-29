@@ -237,9 +237,9 @@ function renderPlayers() {
     }
     const foot = p.chips === 0 ? 'Out' : p.folded ? 'Folded' : p.bet > 0 ? `Bet ${fmt(p.bet)}` : '';
     div.innerHTML = `
-      <div class="top"><span class="name">${esc(p.name)}</span><span class="badges">${badges.join('&ensp;')}</span></div>
+      <div class="head"><span class="name">${esc(p.name)}</span><span class="badges">${badges.map((b) => `<i>${b}</i>`).join('')}</span></div>
       <div class="chips">${fmt(p.chips)}</div>
-      <div class="foot">${foot}</div>`;
+      <div class="meta">${foot}</div>`;
     box.appendChild(div);
   });
 }
