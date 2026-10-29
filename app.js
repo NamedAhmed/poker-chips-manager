@@ -178,6 +178,7 @@
       winners: [],
     };
     startHand();
+    showGame();
   }
 
   function startHand() {
@@ -449,6 +450,7 @@
       state.blindLevel += 1;
     }
     startHand();
+    showGame();
   }
 
   // ---------- persistence ----------
