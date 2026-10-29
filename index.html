@@ -1,164 +1,37 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="description" content="Play poker with nothing but a deck of cards. Free chip manager for stacks, betting streets, blinds and pots. No sign-up." />
-    <meta name="theme-color" content="#0e2a21" />
-    <meta property="og:title" content="Poker Chips Manager" />
-    <meta property="og:description" content="Play poker with nothing but a deck of cards. We track every stack, bet and pot." />
-    <title>Poker Chips Manager</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='%23c8102e'/%3E%3Ccircle cx='50' cy='50' r='26' fill='none' stroke='%23fff' stroke-width='8' stroke-dasharray='10 8'/%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="topbar">
-      <div class="brand">
-        <span class="suits" aria-hidden="true">&#9824;&#9829;</span>
-        <h1>Poker Chips <span class="brand-sub">Manager</span></h1>
-      </div>
-      <button type="button" class="btn btn-ghost btn-sm" id="btn-new" hidden>New game</button>
-    </header>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0c0e">
+<title>Poker chips</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
-    <main class="app">
-      <!-- Setup screen -->
-      <section id="setup" class="panel" aria-labelledby="setup-title">
-        <header class="panel-head">
-          <h2 id="setup-title">Game setup</h2>
-          <p class="lede">Play poker with nothing but a deck of cards. We run the betting streets, blinds and pots &mdash; you bring the cards.</p>
-        </header>
+<section id="setup">
+  <h1>Poker chips</h1>
+  <div id="name-fields"></div>
+  <button id="add-player" data-act="add-row" type="button">Add player</button>
+  <div class="settings">
+    <label>Starting chips<input id="start-chips" inputmode="numeric" value="1000"></label>
+    <label>Small blind<input id="sb" inputmode="numeric" value="25"></label>
+    <label>Big blind<input id="bb" inputmode="numeric" value="50"></label>
+  </div>
+  <button id="begin" class="btn primary" data-act="start" type="button">Start game</button>
+  <p id="setup-error" class="error" hidden>Add at least 2 players</p>
+</section>
 
-        <form id="setup-form" novalidate>
-          <div class="field">
-            <label for="player-count">Number of players</label>
-            <div class="stepper">
-              <button type="button" class="btn btn-round" data-count="-1" aria-label="Remove a player">&minus;</button>
-              <output id="player-count" for="player-count">2</output>
-              <button type="button" class="btn btn-round" data-count="1" aria-label="Add a player">+</button>
-            </div>
-          </div>
+<section id="game" hidden>
+  <header>
+    <span id="hand-label"></span>
+    <button class="ghost" data-act="end-game" type="button">End</button>
+  </header>
+  <div id="pot"><span>Pot</span><b id="pot-value"></b></div>
+  <div id="players"></div>
+  <div id="console"><div class="inner"></div></div>
+</section>
 
-          <fieldset class="names" id="name-fields">
-            <legend class="sr-only">Player names</legend>
-          </fieldset>
-
-          <div class="grid-2">
-            <div class="field">
-              <label for="starting-chips">Starting chips</label>
-              <input id="starting-chips" name="startingChips" type="number" inputmode="numeric" min="1" step="1" value="10000" required />
-            </div>
-            <div class="field">
-              <label for="bet-unit">Bet unit</label>
-              <input id="bet-unit" name="betUnit" type="number" inputmode="numeric" min="1" step="1" value="100" required />
-            </div>
-          </div>
-
-          <div class="field toggle-row">
-            <label class="toggle">
-              <input id="use-blinds" type="checkbox" checked />
-              <span>Use blinds</span>
-            </label>
-          </div>
-
-          <div id="blind-fields" class="grid-2">
-            <div class="field">
-              <label for="small-blind">Small blind</label>
-              <input id="small-blind" name="smallBlind" type="number" inputmode="numeric" min="1" step="1" value="100" />
-            </div>
-            <div class="field">
-              <label for="big-blind">Big blind</label>
-              <input id="big-blind" name="bigBlind" type="number" inputmode="numeric" min="1" step="1" value="200" />
-            </div>
-            <div class="field toggle-row span-2">
-              <label class="toggle">
-                <input id="auto-raise" type="checkbox" />
-                <span>Raise blinds automatically</span>
-              </label>
-              <div class="raise-every" id="raise-every-wrap" hidden>
-                <label for="raise-every">Every</label>
-                <input id="raise-every" type="number" inputmode="numeric" min="1" step="1" value="10" />
-                <span>hands (doubles blinds)</span>
-              </div>
-            </div>
-          </div>
-
-          <p class="error" id="setup-error" role="alert" hidden></p>
-
-          <button type="submit" class="btn btn-primary btn-block">Start game</button>
-        </form>
-      </section>
-
-      <!-- Game screen -->
-      <section id="game" class="game" aria-label="Game" hidden>
-        <div class="statusbar">
-          <div class="stat">
-            <span class="stat-label">Hand</span>
-            <span class="stat-value" id="hand-number">1</span>
-          </div>
-          <div class="stat stat-stage">
-            <span class="stat-label">Stage</span>
-            <span class="stat-value" id="stage-label">Pre-flop</span>
-          </div>
-          <div class="stat stat-pot">
-            <span class="stat-label">Total pot</span>
-            <span class="stat-value" id="pot-value">0</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Blinds</span>
-            <span class="stat-value" id="blinds-value">Off</span>
-          </div>
-        </div>
-
-        <section class="community" aria-label="Community cards">
-          <div class="community-cards" id="community-cards"></div>
-        </section>
-
-        <section class="table-wrap" aria-label="Players">
-          <table class="player-table">
-            <thead>
-              <tr>
-                <th class="c-seg" scope="col">#</th>
-                <th scope="col">Player</th>
-                <th class="num" scope="col">Chips</th>
-                <th class="num" scope="col">Bet</th>
-                <th class="c-stat" scope="col">Stat</th>
-              </tr>
-            </thead>
-            <tbody id="player-table-body"></tbody>
-          </table>
-        </section>
-
-        <section class="actions-panel" aria-label="Actions">
-          <h3 id="to-act" class="to-act-label">Player to act</h3>
-          <div class="action-buttons" id="action-buttons"></div>
-        </section>
-
-        <section class="showdown-panel" id="showdown" hidden aria-label="Showdown">
-          <p class="sd-pot"><strong>Main pot</strong>: <span id="showdown-pot">0</span></p>
-          <h3>Choose the winner</h3>
-          <p class="muted">Pick the winner from the eligible players (you can pick more than one).</p>
-          <div class="winner-choices" id="winner-choices"></div>
-          <button type="button" class="btn btn-primary btn-block" id="btn-confirm-winner" disabled>Confirm winner</button>
-        </section>
-
-        <section class="complete-panel" id="hand-complete" hidden aria-label="Hand complete">
-          <h3>Hand complete</h3>
-          <p id="complete-msg" class="muted">The chips have been paid out.</p>
-          <div class="complete-actions">
-            <button type="button" class="btn btn-primary" id="btn-next-hand">&#9654;&#65038; Next hand</button>
-            <button type="button" class="btn btn-ghost" id="btn-save-stop">Save and stop here</button>
-          </div>
-        </section>
-
-        <footer class="game-footer">
-          <p>Chip counts only &mdash; bring your own deck. Not a gambling service, and nothing of value is staked here.</p>
-        </footer>
-      </section>
-    </main>
-
-    <script src="app.js"></script>
-  </body>
+<script src="app.js"></script>
+</body>
 </html>

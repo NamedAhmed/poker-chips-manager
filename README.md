@@ -1,34 +1,30 @@
-# Poker Chips Manager
+# Poker Chips
 
-Play poker with nothing but a deck of cards. This free, no-sign-up web app tracks every stack, bet, blind and pot at the kitchen table.
+A minimal poker chip tracker for home games played with real cards. No card engine — just chips, blinds, bets and payouts.
 
-## Features
+## How it works
 
-- Set up 2–10 players with names, starting chips and a bet unit.
-- Optional blinds (small and big), with an optional automatic raise every N hands.
-- Real betting streets: pre-flop → flop → turn → river, with community cards dealt at each street.
-- Enforced turn order and legal actions per seat: Fold, Check, Call, Raise (with a minimum), All-in.
-- Showdown: pick one or more winners and the pot is paid out (odd chips go to the first winner).
-- A bet no one called comes back to the raiser when the hand ends early.
-- Dealer rotation (skip only eliminated players) and blind posting each new hand.
-- The game is saved in your browser, so a reload keeps your place — even mid-hand.
+1. **Setup** — add player names, set starting chips and the small/big blind, start.
+2. **Each hand** — blinds are posted automatically and the dealer button rotates. Players act in turn with big, clear buttons: **Fold · Check · Call (exact amount) · Raise · All-in**. A raise is the **total** amount you bet for the hand, set with a −/+ stepper.
+3. **End of betting** — when everyone has matched the bets (or everyone folds to one player), pick who won — tap one name, or several to split the pot — and confirm. Chips are paid instantly.
+4. **Next hand** — one tap. Players who run out of chips are marked out and skipped. Last player with chips wins the game.
+
+Everything is saved automatically, so a reload (or closing the tab) brings the game back exactly where it was. No accounts, no server, no clutter.
 
 ## Run locally
 
-No build step or dependencies are needed. Serve the folder with any static server, for example:
+Open `index.html`, or serve the folder:
 
-```bash
-npx serve .
+```sh
+node -e "require('http').createServer((q,s)=>{require('fs').readFile(q.url==='/'?'index.html':q.url.slice(1),(e,d)=>{s.setHeader('content-type',{'js':'text/javascript','css':'text/css','html':'text/html'}[q.url.split('.').pop().split('?')[0]]||'text/html');s.end(d)})}).listen(8080)"
 ```
-
-Then open the printed URL. Opening `index.html` directly also works for most features.
 
 ## Deploy
 
-The app is plain static files (`index.html`, `styles.css`, `app.js`), so it deploys to Vercel with no build settings. Use the default "Other" preset, no build command, and output directory `.`.
+Static site — deploy anywhere. Currently on Vercel (domain `poker.ahmedzia.ca` pending its DNS record).
 
 ## Files
 
-- `index.html`: the page structure for setup and game screens.
-- `styles.css`: mobile-first styles with safe-area padding.
-- `app.js`: game state, betting, blinds, pot and saving.
+- `index.html` — setup + game screens
+- `app.js` — game state, betting round, payouts, persistence
+- `styles.css` — dark minimal theme
