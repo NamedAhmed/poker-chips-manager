@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<canvas id="glass-bg" data-glass-bg=""></canvas>
 
 <section id="setup">
   <h1>Poker chips</h1>
@@ -29,9 +30,10 @@
   </header>
   <div id="pot"><span>Pot</span><b id="pot-value"></b></div>
   <div id="players"></div>
-  <div id="console"><div class="inner"></div></div>
+  <div id="console"><canvas data-glass aria-hidden="true"></canvas><div class="inner"></div></div>
 </section>
 
-<script src="app.js"></script>
+<script src="glass.js?v=6"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>

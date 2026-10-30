@@ -220,15 +220,22 @@ function render() {
   $('#pot-value').textContent = fmt(state.pot);
   renderPlayers();
   renderConsole();
+  if (window.Glass) Glass.refresh();
 }
 
 function renderPlayers() {
   const box = $('#players');
   box.innerHTML = '';
-  state.players.forEach((p, i) => {
+  const n = state.players.length;
+  let start = state.turn >= 0 ? state.turn : state.players.findIndex((p) => p.chips > 0);
+  if (start < 0) start = 0;
+  const order = [];
+  for (let k = 0; k < n; k++) order.push((start + k) % n);
+  order.forEach((i, rank) => {
+    const p = state.players[i];
     const isTurn = state.phase === 'betting' && i === state.turn;
     const div = document.createElement('div');
-    div.className = 'pcard' + (isTurn ? ' to-act' : '') + (p.folded ? ' folded' : '') + (p.chips === 0 ? ' out' : '');
+    div.className = 'pcard' + (rank === 0 ? ' hero' : '') + (isTurn ? ' to-act' : '') + (p.folded ? ' folded' : '') + (p.chips === 0 ? ' out' : '');
     const badges = [];
     if (p.chips > 0) {
       if (i === state.sbIdx) badges.push('SB');
@@ -240,6 +247,10 @@ function renderPlayers() {
       <div class="head"><span class="name">${esc(p.name)}</span><span class="badges">${badges.map((b) => `<i>${b}</i>`).join('')}</span></div>
       <div class="chips">${fmt(p.chips)}</div>
       <div class="meta">${foot}</div>`;
+    const cv = document.createElement('canvas');
+    cv.dataset.glass = '';
+    cv.setAttribute('aria-hidden', 'true');
+    div.appendChild(cv);
     box.appendChild(div);
   });
 }
